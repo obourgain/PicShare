@@ -14,3 +14,11 @@ Under Apache Software Version 2 license. Please read `LICENSE.txt`.
 ```
 mvn clean verify
 ```
+
+## Run
+
+```
+mvn clean verify
+docker build -t alecharp/picshare .
+docker run -ti -p 8080/8080 alecharp/picshare
+```
