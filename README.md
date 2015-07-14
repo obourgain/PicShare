@@ -19,6 +19,6 @@ mvn clean verify
 
 ```
 mvn clean verify
-docker build -t alecharp/picshare .
-docker run -ti -p 8080/8080 alecharp/picshare
+docker build -t $USER/picshare .
+docker run -ti -p 8080:8080 $USER/picshare
 ```
