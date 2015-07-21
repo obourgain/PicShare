@@ -1,8 +1,9 @@
 package fr.alecharp.picshare.domain;
 
+import com.google.common.collect.Sets;
+
 import java.time.LocalDate;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Adrien Lecharpentier
@@ -12,6 +13,9 @@ public class Event {
 
     private String title;
     private LocalDate date;
+    private Set<Picture> pictures = new TreeSet<>(
+            (p1, p2) -> p1.title().compareTo(p2.title())
+    );
 
     private Event() {
         this(null, null);
@@ -33,6 +37,15 @@ public class Event {
 
     public LocalDate date() {
         return date;
+    }
+
+    public Set<Picture> pictures() {
+        return Collections.unmodifiableSet(pictures);
+    }
+
+    public Event pictures(Set<Picture> pictures) {
+        this.pictures.addAll(Sets.newHashSet(pictures));
+        return this;
     }
 
     @Override
