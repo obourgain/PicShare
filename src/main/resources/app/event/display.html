@@ -1,0 +1,34 @@
+---
+layout: default
+---
+
+<div class="navbar-fixed">
+	<nav>
+		<div class="nav-wrapper light-blue darken-3">
+			<a href class="brand-logo center">[[ event.title ]]</a>
+			<ul class="right hide-on-med-and-down">
+				<li><a href><i class="material-icons">refresh</i></a></li>
+			</ul>
+		</div>
+	</nav>
+</div>
+
+<div class="container">
+	<div class="row">
+		[[#each event.pictures]]
+		<div class="col s6 m4 l3">
+			<div class="card hoverable">
+				<div class="card-image">
+					<img src="[[ thumb ]]"/>
+				</div>
+				<div class="card-action">
+					<a class="btn-floating waves-effect waves-light btn light-blue"
+						href="[[ path ]]" target="_blank">
+						<i class="material-icons">fullscreen</i>
+					</a>
+				</div>
+			</div>
+		</div>
+		[[/each]]
+	</div>
+</div>
