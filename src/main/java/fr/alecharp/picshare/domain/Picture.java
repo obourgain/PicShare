@@ -11,15 +11,17 @@ public class Picture {
 
     private String title;
     private String path;
+    private String thumb;
 
     private Picture() {
-        this(null, null);
+        this(null, null, null);
     }
 
-    public Picture(String title, String path) {
+    public Picture(String title, String path, String thumb) {
         this.id = UUID.randomUUID().toString();
         this.title = title;
         this.path = path;
+        this.thumb = thumb;
     }
 
     public String id() {
@@ -32,6 +34,10 @@ public class Picture {
 
     public String path() {
         return path;
+    }
+
+    public String thumb() {
+        return thumb;
     }
 
     @Override

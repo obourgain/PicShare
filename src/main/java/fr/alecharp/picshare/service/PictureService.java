@@ -3,9 +3,12 @@ package fr.alecharp.picshare.service;
 import com.google.inject.Singleton;
 import fr.alecharp.picshare.domain.Picture;
 import net.codestory.http.Part;
+import org.imgscalr.Scalr;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,10 +31,19 @@ public class PictureService {
         try {
             Path target = Paths.get(storageLocation, eventID, part.fileName());
             Files.copy(part.inputStream(), target);
-            return Optional.of(new Picture(part.fileName(), "/" + target.toString()));
+            String thumb = createThumbForPicture(target, Paths.get(storageLocation, eventID, ".thumb", part.fileName()));
+            return Optional.of(new Picture(part.fileName(), "/" + target.toString(), thumb));
         } catch (IOException e) {
             // TODO: log
             return Optional.empty();
         }
     }
+
+    private String createThumbForPicture(Path src, Path dest) throws IOException {
+        BufferedImage original = ImageIO.read(src.toFile());
+        BufferedImage resize = Scalr.resize(original, Scalr.Method.SPEED, 640, 480);
+        ImageIO.write(resize, "jpg", dest.toFile());
+        return "/" + dest.toString();
+    }
+
 }
