@@ -20,5 +20,5 @@ mvn clean verify
 ```
 mvn clean verify
 docker build -t $USER/picshare .
-docker run -ti -p 8080:8080 $USER/picshare
+docker run -ti -p 8080:8080 -v "$(pwd)/pictures":/var/pictures $USER/picshare
 ```
