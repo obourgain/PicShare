@@ -1,6 +1,8 @@
 package fr.alecharp.picshare;
 
+import fr.alecharp.picshare.config.PicShareModule;
 import net.codestory.http.WebServer;
+import net.codestory.http.injection.GuiceAdapter;
 
 /**
  * @author Adrien Lecharpentier
@@ -8,7 +10,9 @@ import net.codestory.http.WebServer;
 public class App {
     public static void main(String[] args) {
         new WebServer()
-                .configure(r -> r.get("/ping", "pong"))
-                .start(8080);
+            .configure(r -> r
+                .setIocAdapter(new GuiceAdapter(new PicShareModule()))
+                .get("/ping", "pong")
+            ).start(8080);
     }
 }
