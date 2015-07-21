@@ -1,6 +1,7 @@
 package fr.alecharp.picshare.service;
 
 import fr.alecharp.picshare.domain.Event;
+import fr.alecharp.picshare.domain.Picture;
 import fr.alecharp.picshare.repository.EventRepository;
 
 import javax.inject.Inject;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Adrien Lecharpentier
@@ -41,5 +43,11 @@ public class EventService {
 
     public Optional<Event> get(String id) {
         return Optional.ofNullable(eventRepository.findById(id));
+    }
+
+    public Optional<Event> attachPictures(String id, Set<Picture> pictures) {
+        Optional<Event> event = get(id);
+        if (!event.isPresent()) return event;
+        return save(event.get().pictures(pictures));
     }
 }
