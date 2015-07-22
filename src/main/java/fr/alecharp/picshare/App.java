@@ -20,13 +20,14 @@ public class App {
         new WebServer()
             .configure(r -> {
                 Injector injector = Guice.createInjector(new PicShareModule());
-                String storageLocation = injector.getInstance(Key.get(String.class, Names.named("storageLocation")));
+                String storage = injector.getInstance(Key.get(String.class, Names.named("storage-location")));
+                String prefix = injector.getInstance(Key.get(String.class, Names.named("picture-prefix")));
                 r
                     .setIocAdapter(new GuiceAdapter(injector))
                     .get("/ping", "pong")
                     .add(EventController.class)
                     .add(EventResource.class)
-                    .bind(String.format("/%s/", storageLocation), Paths.get(storageLocation).toFile());
+                    .bind(prefix, Paths.get(storage).toFile());
             }).start(8080);
     }
 }

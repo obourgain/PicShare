@@ -20,19 +20,22 @@ import java.util.Optional;
  */
 @Singleton
 public class PictureService {
-    private final String storageLocation;
+    private final String storage;
+    private final String prefix;
 
     @Inject
-    public PictureService(@Named("storageLocation") String storageLocation) {
-        this.storageLocation = storageLocation;
+    public PictureService(@Named("storage-location") String storage,
+                          @Named("picture-prefix") String prefix) {
+        this.storage = storage;
+        this.prefix = prefix;
     }
 
     public Optional<Picture> upload(String eventID, Part part) {
         try {
-            Path target = Paths.get(storageLocation, eventID, part.fileName());
+            Path target = Paths.get(storage, eventID, part.fileName());
             Files.copy(part.inputStream(), target);
-            String thumb = createThumbForPicture(target, Paths.get(storageLocation, eventID, ".thumb", part.fileName()));
-            return Optional.of(new Picture(part.fileName(), target.toString(), thumb));
+            String thumb = createThumbForPicture(target, Paths.get(storage, eventID, ".thumb", part.fileName()));
+            return Optional.of(new Picture(part.fileName(), target.toString().replace(storage, prefix), thumb));
         } catch (IOException e) {
             // TODO: log
             return Optional.empty();
@@ -43,10 +46,14 @@ public class PictureService {
         BufferedImage original = ImageIO.read(src.toFile());
         BufferedImage resize = Scalr.resize(original, Scalr.Method.SPEED, 640, 480);
         ImageIO.write(resize, "jpg", dest.toFile());
-        return dest.toString();
+        return dest.toString().replace(storage, prefix);
     }
 
-    public Path getPicture(String eventId, String pictureTitle) {
-        return Paths.get(storageLocation, eventId, pictureTitle);
+    public Path get(String eventId, String pictureTitle) {
+        return Paths.get(storage, eventId, pictureTitle);
+    }
+
+    public Path get(Picture picture) {
+        return Paths.get(picture.path().replace(prefix, storage));
     }
 }
