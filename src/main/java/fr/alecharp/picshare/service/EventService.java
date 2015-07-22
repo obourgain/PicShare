@@ -23,11 +23,15 @@ import java.util.zip.ZipOutputStream;
 public class EventService {
     private final EventRepository eventRepository;
     private final String storage;
+    private final PictureService pictureService;
 
     @Inject
-    public EventService(EventRepository eventRepository, @Named("storageLocation") String storage) {
+    public EventService(EventRepository eventRepository,
+                        @Named("storage-location") String storage,
+                        PictureService pictureService) {
         this.eventRepository = eventRepository;
         this.storage = storage;
+        this.pictureService = pictureService;
     }
 
     public Optional<Event> save(Event event) {
@@ -68,7 +72,7 @@ public class EventService {
         try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(dest))) {
             for (Picture picture : event.pictures()) {
                 zip.putNextEntry(new ZipEntry(picture.title()));
-                Files.copy(Paths.get(picture.path()), zip);
+                Files.copy(pictureService.get(picture), zip);
                 zip.closeEntry();
             }
         }
