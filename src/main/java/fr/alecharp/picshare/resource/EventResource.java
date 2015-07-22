@@ -6,12 +6,15 @@ import fr.alecharp.picshare.service.PictureService;
 import net.codestory.http.Response;
 import net.codestory.http.annotations.Get;
 import net.codestory.http.annotations.Prefix;
+import net.codestory.http.constants.HttpStatus;
+import net.codestory.http.payload.Payload;
 import net.codestory.http.templating.Model;
 import net.codestory.http.templating.ModelAndView;
 
 import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -37,8 +40,23 @@ public class EventResource {
     }
 
     @Get("/:id/:picture")
-    public void download(String id, String picture, Response resp) throws IOException {
+    public void downloadPicture(String id, String picture, Response resp) throws IOException {
         resp.setHeader("Content-Type", "application/octet-stream");
         Files.copy(pictureService.getPicture(id, picture), resp.outputStream());
+    }
+
+    @Get("/:id/zip")
+    public Payload downloadEvent(String id, Response resp) throws IOException {
+        Optional<Event> event = eventService.get(id);
+        if (!event.isPresent()) {
+            return Payload.notFound();
+        }
+        resp.setHeader("Content-Type", "application/octet-stream");
+        resp.setHeader("Content-Disposition", "attachment; filename=\"" + event.get().title() + ".zip\"");
+        Path zip = eventService.getZip(id);
+        resp.setContentLength(Files.size(zip));
+        Files.copy(zip, resp.outputStream());
+
+        return Payload.ok();
     }
 }

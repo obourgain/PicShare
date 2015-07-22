@@ -8,7 +8,11 @@ layout: default
 			<a href class="brand-logo center">[[ event.title ]]</a>
 			<ul class="right hide-on-med-and-down">
 				[[#if event.pictures]]
-				<li class="grey-text text-darken-4">Il y a [[event.pictures.size]] éléments</li>
+				<li>
+					<a href="[[ event.id ]]/zip" class="grey-text text-darken-4">
+						<i class="material-icons left">file_download</i>Il y a [[event.pictures.size]] éléments
+					</a>
+				</li>
 				[[/if]]
 				<li><a href><i class="material-icons">refresh</i></a></li>
 			</ul>
