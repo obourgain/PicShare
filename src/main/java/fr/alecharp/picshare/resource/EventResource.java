@@ -6,9 +6,7 @@ import fr.alecharp.picshare.service.PictureService;
 import net.codestory.http.Response;
 import net.codestory.http.annotations.Get;
 import net.codestory.http.annotations.Prefix;
-import net.codestory.http.constants.HttpStatus;
 import net.codestory.http.payload.Payload;
-import net.codestory.http.templating.Model;
 import net.codestory.http.templating.ModelAndView;
 
 import javax.inject.Inject;

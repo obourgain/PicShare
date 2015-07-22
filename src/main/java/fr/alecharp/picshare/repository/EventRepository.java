@@ -5,7 +5,6 @@ import fr.alecharp.picshare.domain.Event;
 import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author Adrien Lecharpentier
