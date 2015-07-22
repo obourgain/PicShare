@@ -46,4 +46,7 @@ public class PictureService {
         return dest.toString();
     }
 
+    public Path getPicture(String eventId, String pictureTitle) {
+        return Paths.get(storageLocation, eventId, pictureTitle);
+    }
 }
