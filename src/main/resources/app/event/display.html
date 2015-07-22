@@ -7,6 +7,9 @@ layout: default
 		<div class="nav-wrapper light-blue darken-3">
 			<a href class="brand-logo center">[[ event.title ]]</a>
 			<ul class="right hide-on-med-and-down">
+				[[#if event.pictures]]
+				<li class="grey-text text-darken-4">Il y a [[event.pictures.size]] éléments</li>
+				[[/if]]
 				<li><a href><i class="material-icons">refresh</i></a></li>
 			</ul>
 		</div>
