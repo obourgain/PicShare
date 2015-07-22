@@ -1,6 +1,5 @@
 package fr.alecharp.picshare.domain;
 
-import com.google.common.collect.Sets;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -44,7 +43,7 @@ public class Event {
     }
 
     public Event pictures(Set<Picture> pictures) {
-        this.pictures.addAll(Sets.newHashSet(pictures));
+        this.pictures.addAll(pictures);
         return this;
     }
 
