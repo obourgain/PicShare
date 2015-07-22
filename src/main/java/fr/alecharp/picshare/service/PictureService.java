@@ -32,7 +32,7 @@ public class PictureService {
             Path target = Paths.get(storageLocation, eventID, part.fileName());
             Files.copy(part.inputStream(), target);
             String thumb = createThumbForPicture(target, Paths.get(storageLocation, eventID, ".thumb", part.fileName()));
-            return Optional.of(new Picture(part.fileName(), "/" + target.toString(), thumb));
+            return Optional.of(new Picture(part.fileName(), target.toString(), thumb));
         } catch (IOException e) {
             // TODO: log
             return Optional.empty();
@@ -43,7 +43,7 @@ public class PictureService {
         BufferedImage original = ImageIO.read(src.toFile());
         BufferedImage resize = Scalr.resize(original, Scalr.Method.SPEED, 640, 480);
         ImageIO.write(resize, "jpg", dest.toFile());
-        return "/" + dest.toString();
+        return dest.toString();
     }
 
 }
