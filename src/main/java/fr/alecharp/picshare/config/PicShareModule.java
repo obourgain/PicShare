@@ -16,8 +16,15 @@ public class PicShareModule extends AbstractModule {
 
     @Provides
     @Singleton
-    @Named("storageLocation")
+    @Named("storage-location")
     public String provideStorageLocation() {
         return "pictures";
+    }
+
+    @Provides
+    @Singleton
+    @Named("picture-prefix")
+    public String providePicturePrefix() {
+        return "/pictures";
     }
 }

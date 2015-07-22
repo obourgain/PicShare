@@ -40,7 +40,7 @@ public class EventResource {
     @Get("/:id/:picture")
     public void downloadPicture(String id, String picture, Response resp) throws IOException {
         resp.setHeader("Content-Type", "application/octet-stream");
-        Files.copy(pictureService.getPicture(id, picture), resp.outputStream());
+        Files.copy(pictureService.get(id, picture), resp.outputStream());
     }
 
     @Get("/:id/zip")
