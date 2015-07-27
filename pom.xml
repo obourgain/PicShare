@@ -48,6 +48,18 @@
       <artifactId>imgscalr-lib</artifactId>
       <version>4.2</version>
     </dependency>
+
+    <!-- Webjars -->
+    <dependency>
+      <groupId>org.webjars.bower</groupId>
+      <artifactId>jquery</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars.bower</groupId>
+      <artifactId>materialize</artifactId>
+      <version>0.97.0</version>
+    </dependency>
   </dependencies>
 
   <build>
