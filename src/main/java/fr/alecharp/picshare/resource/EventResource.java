@@ -53,7 +53,7 @@ public class EventResource {
         }
         resp.setHeader("Content-Type", "application/octet-stream");
         resp.setHeader("Content-Disposition", "attachment; filename=\"" + event.get().title() + ".zip\"");
-        Path zip = eventService.getZip(id);
+        Path zip = eventService.createZip(event.get());
         resp.setContentLength(Files.size(zip));
         Files.copy(zip, resp.outputStream());
 

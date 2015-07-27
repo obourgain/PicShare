@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Optional;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -22,8 +23,8 @@ import java.util.zip.ZipOutputStream;
 @Singleton
 public class EventService {
     private final EventRepository eventRepository;
-    private final String storage;
     private final PictureService pictureService;
+    private final String storage;
 
     @Inject
     public EventService(EventRepository eventRepository,
@@ -53,20 +54,12 @@ public class EventService {
     public Optional<Event> attachPictures(String id, Set<Picture> pictures) {
         Optional<Event> event = get(id);
         if (!event.isPresent()) return event;
-        Optional<Event> save = eventRepository.update(event.get().pictures(pictures));
-        if (save.isPresent()) {
-            try {
-                createZip(save.get());
-            } catch (IOException e) {
-                // TODO log
-                e.printStackTrace();
-            }
-        }
-        return save;
+        return save(event.get().pictures(pictures));
     }
 
-    private void createZip(Event event) throws IOException {
-        Path dest = Paths.get(storage, event.id(), "event.zip");
+    public Path createZip(Event event) throws IOException {
+        Path dest = Files.createTempFile("event", event.id(),
+                PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-r-----")));
         try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(dest))) {
             for (Picture picture : event.pictures()) {
                 zip.putNextEntry(new ZipEntry(picture.title()));
@@ -74,11 +67,6 @@ public class EventService {
                 zip.closeEntry();
             }
         }
-    }
-
-    public Path getZip(String id) throws IOException {
-        Path path = Paths.get(storage, id, "event.zip");
-        if (Files.notExists(path)) createZip(get(id).get());
-        return path;
+        return dest;
     }
 }
