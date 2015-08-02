@@ -3,7 +3,7 @@ layout: default
 ---
 
 <script type="text/javascript">
-	(function($) {
+	(function ($) {
 		$(document).ready(function () {
 			$('.button-collapse').sideNav();
 		});
@@ -38,7 +38,7 @@ layout: default
 <div class="row">
 	[[#each event.pictures]]
 	<div class="col s6 m4 l2">
-		<div class="card hoverable" style="overflow: initial;">
+		<div class="card" style="overflow: initial;">
 			<div class="card-image">
 				<img src="[[ thumb ]]" class="materialboxed" data-caption="[[ title ]]"/>
 			</div>
@@ -51,10 +51,6 @@ layout: default
 					 href="[[ event.id]]/[[ title ]]" target="_blank">
 					<i class="material-icons">file_download</i>
 				</a>
-			</div>
-			<div class="card-reveal">
-				<span class="card-title grey-text text-darken-4">Card Title <i class="mdi-navigation-close right"></i></span>
-				<p>Here is some more information about this product that is only revealed once clicked on.</p>
 			</div>
 		</div>
 	</div>
