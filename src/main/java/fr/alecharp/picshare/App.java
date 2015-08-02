@@ -10,6 +10,8 @@ import fr.alecharp.picshare.http.EventController;
 import fr.alecharp.picshare.resource.EventResource;
 import net.codestory.http.WebServer;
 import net.codestory.http.injection.GuiceAdapter;
+import org.dalesbred.Database;
+import org.flywaydb.core.Flyway;
 
 import java.nio.file.Paths;
 
@@ -18,9 +20,18 @@ import java.nio.file.Paths;
  */
 public class App {
     public static void main(String[] args) {
+        final Injector injector = Guice.createInjector(new PicShareModule(), new DataBaseModule());
+
+        Flyway flyway = new Flyway();
+        String url = injector.getInstance(Key.get(String.class, Names.named("jdbc.url")));
+        String user = injector.getInstance(Key.get(String.class, Names.named("jdbc.user")));
+        String password = injector.getInstance(Key.get(String.class, Names.named("jdbc.password")));
+
+        flyway.setDataSource(url, user, password);
+        flyway.migrate();
+
         new WebServer()
             .configure(r -> {
-                Injector injector = Guice.createInjector(new PicShareModule(), new DataBaseModule());
                 String storage = injector.getInstance(Key.get(String.class, Names.named("storage-location")));
                 String prefix = injector.getInstance(Key.get(String.class, Names.named("picture-prefix")));
                 r
