@@ -21,7 +21,11 @@ public class Event {
     }
 
     public Event(String title, LocalDate date) {
-        this.id = UUID.randomUUID().toString();
+        this(UUID.randomUUID().toString(), title, date);
+    }
+
+    public Event(String id, String title, LocalDate date) {
+        this.id = id;
         this.title = title;
         this.date = date;
     }

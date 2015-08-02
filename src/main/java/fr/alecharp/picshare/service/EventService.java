@@ -36,26 +36,24 @@ public class EventService {
 
     public Optional<Event> save(Event event) {
         try {
-            event = eventRepository.save(event);
-            Files.createDirectories(Paths.get(storage, event.id(), ".thumb"));
-            return Optional.ofNullable(event);
+            Optional<Event> saved = eventRepository.save(event);
+            if (saved.isPresent()) {
+                Files.createDirectories(Paths.get(storage, event.id(), ".thumb"));
+            }
+            return saved;
         } catch (IOException e) {
             return Optional.empty();
         }
     }
 
-    public void remove(String id) {
-        eventRepository.delete(id);
-    }
-
     public Optional<Event> get(String id) {
-        return Optional.ofNullable(eventRepository.findById(id));
+        return eventRepository.findById(id);
     }
 
     public Optional<Event> attachPictures(String id, Set<Picture> pictures) {
         Optional<Event> event = get(id);
         if (!event.isPresent()) return event;
-        Optional<Event> save = save(event.get().pictures(pictures));
+        Optional<Event> save = eventRepository.update(event.get().pictures(pictures));
         if (save.isPresent()) {
             try {
                 createZip(save.get());

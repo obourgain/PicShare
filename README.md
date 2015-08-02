@@ -18,7 +18,12 @@ mvn clean verify
 ## Run
 
 ```
-mvn clean verify
-docker build -t $USER/picshare .
-docker run -ti -p 8080:8080 -v "$(pwd)/pictures":/var/pictures $USER/picshare
+$ mvn clean verify
+$ docker build -t $USER/picshare .
+$ docker run -ti -p 8080:8080 \
+    -v "$(pwd)/pictures":/var/pictures \
+    --link postgres-picshare:postgres \
+    $USER/picshare
 ```
+
+To run the application without the sources, see `INSTALLATION.md`.
