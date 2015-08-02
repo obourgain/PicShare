@@ -54,7 +54,7 @@ public class EventService {
     public Optional<Event> attachPictures(String id, Set<Picture> pictures) {
         Optional<Event> event = get(id);
         if (!event.isPresent()) return event;
-        return save(event.get().pictures(pictures));
+        return eventRepository.update(event.get().pictures(pictures));
     }
 
     public Path createZip(Event event) throws IOException {
