@@ -6,14 +6,10 @@ import org.dalesbred.Database;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 /**
  * @author Adrien Lecharpentier
@@ -67,8 +63,7 @@ public class EventRepository {
     public Optional<Event> findById(String id) {
         return db.withTransaction(tx -> {
             Optional<Event> optional = db.findOptional(Event.class, "SELECT * FROM events WHERE id = ?", id);
-            if (optional.isPresent()) {
-                Event event = optional.get();
+            return optional.map(event ->  {
                 Set<Picture> pictures =
                         db.findAll(String.class, "SELECT id_picture FROM event_picture WHERE id_event = ?", event.id())
                                 .stream()
@@ -76,9 +71,8 @@ public class EventRepository {
                                 .filter(Optional::isPresent).map(Optional::get)
                                 .collect(toSet());
                 event.pictures(pictures);
-                return Optional.of(event);
-            }
-            return optional;
+                return event;
+            });
         });
     }
 }
