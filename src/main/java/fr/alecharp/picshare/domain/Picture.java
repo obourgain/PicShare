@@ -18,7 +18,11 @@ public class Picture {
     }
 
     public Picture(String title, String path, String thumb) {
-        this.id = UUID.randomUUID().toString();
+        this(UUID.randomUUID().toString(), title, path, thumb);
+    }
+
+    public Picture(String id, String title, String path, String thumb) {
+        this.id = id;
         this.title = title;
         this.path = path;
         this.thumb = thumb;
