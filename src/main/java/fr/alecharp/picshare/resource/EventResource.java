@@ -6,6 +6,7 @@ import fr.alecharp.picshare.service.PictureService;
 import net.codestory.http.Response;
 import net.codestory.http.annotations.Get;
 import net.codestory.http.annotations.Prefix;
+import net.codestory.http.constants.HttpStatus;
 import net.codestory.http.payload.Payload;
 import net.codestory.http.templating.ModelAndView;
 
@@ -46,17 +47,15 @@ public class EventResource {
     }
 
     @Get("/:id/zip")
-    public Payload downloadEvent(String id, Response resp) throws IOException {
+    public void downloadEvent(String id, Response resp) throws IOException {
         Optional<Event> event = eventService.get(id);
         if (!event.isPresent()) {
-            return Payload.notFound();
+            resp.setStatus(HttpStatus.NOT_FOUND);
+            return;
         }
         resp.setHeader("Content-Type", "application/octet-stream");
         resp.setHeader("Content-Disposition", "attachment; filename=\"" + event.get().title() + ".zip\"");
-        Path zip = eventService.createZip(event.get());
-        resp.setContentLength(Files.size(zip));
-        Files.copy(zip, resp.outputStream());
-
-        return Payload.ok();
+        resp.setStatus(HttpStatus.OK);
+        eventService.generateZip(event.get(), resp.outputStream());
     }
 }

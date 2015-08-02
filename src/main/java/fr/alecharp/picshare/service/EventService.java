@@ -8,13 +8,20 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Enumeration;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -57,16 +64,13 @@ public class EventService {
         return eventRepository.update(event.get().pictures(pictures));
     }
 
-    public Path createZip(Event event) throws IOException {
-        Path dest = Files.createTempFile("event", event.id(),
-                PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-r-----")));
-        try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(dest))) {
+    public void generateZip(Event event, OutputStream stream) throws IOException {
+        try (ZipOutputStream zip = new ZipOutputStream(stream)) {
             for (Picture picture : event.pictures()) {
                 zip.putNextEntry(new ZipEntry(picture.title()));
                 Files.copy(pictureService.get(picture), zip);
                 zip.closeEntry();
             }
         }
-        return dest;
     }
 }
