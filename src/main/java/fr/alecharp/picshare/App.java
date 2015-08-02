@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
+import fr.alecharp.picshare.config.DataBaseModule;
 import fr.alecharp.picshare.config.PicShareModule;
 import fr.alecharp.picshare.http.EventController;
 import fr.alecharp.picshare.resource.EventResource;
@@ -19,7 +20,7 @@ public class App {
     public static void main(String[] args) {
         new WebServer()
             .configure(r -> {
-                Injector injector = Guice.createInjector(new PicShareModule());
+                Injector injector = Guice.createInjector(new PicShareModule(), new DataBaseModule());
                 String storage = injector.getInstance(Key.get(String.class, Names.named("storage-location")));
                 String prefix = injector.getInstance(Key.get(String.class, Names.named("picture-prefix")));
                 r
