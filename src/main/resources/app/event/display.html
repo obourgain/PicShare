@@ -1,0 +1,62 @@
+---
+layout: default
+---
+
+<script type="text/javascript">
+	(function($) {
+		$(document).ready(function () {
+			$('.button-collapse').sideNav();
+		});
+	})(jQuery);
+</script>
+
+<div class="navbar-fixed">
+	<nav>
+		<div class="nav-wrapper light-blue darken-3">
+			<div class="container">
+				<a href class="page-title">[[ event.title ]]</a>
+				<a href="#" data-activates="event-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+				<ul class="right hide-on-med-and-down">
+					[[#if event.pictures]]
+					<li>Il y a [[event.pictures.size]] éléments</li>
+					<li><a href="[[ event.id ]]/zip"><i class="material-icons">file_download</i></a></li>
+					[[/if]]
+					<li><a href><i class="material-icons">refresh</i></a></li>
+				</ul>
+				<ul class="side-nav" id="event-mobile">
+					<li class="hide-on-med-and-up"><a href="/">Home</a></li>
+					[[#if event.pictures]]
+					<li><a href="[[ event.id ]]/zip">Download</a></li>
+					[[/if]]
+					<li><a href>Refresh</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+</div>
+
+<div class="row">
+	[[#each event.pictures]]
+	<div class="col s6 m4 l2">
+		<div class="card hoverable" style="overflow: initial;">
+			<div class="card-image">
+				<img src="[[ thumb ]]" class="materialboxed" data-caption="[[ title ]]"/>
+			</div>
+			<div class="card-action">
+				<a class="btn-floating waves-effect waves-light btn light-blue"
+					 href="[[ path ]]" target="_blank">
+					<i class="material-icons">fullscreen</i>
+				</a>
+				<a class="btn-floating waves-effect waves-light btn light-green"
+					 href="[[ event.id]]/[[ title ]]" target="_blank">
+					<i class="material-icons">file_download</i>
+				</a>
+			</div>
+			<div class="card-reveal">
+				<span class="card-title grey-text text-darken-4">Card Title <i class="mdi-navigation-close right"></i></span>
+				<p>Here is some more information about this product that is only revealed once clicked on.</p>
+			</div>
+		</div>
+	</div>
+	[[/each]]
+</div>
