@@ -8,7 +8,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
+import static java.util.Arrays.*;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -27,10 +29,8 @@ public class EventRepository {
         return Optional.ofNullable(db.withTransaction(tx -> {
             int res = db.update("INSERT INTO events (id, title, date) VALUES(?,?,?)", event.id(), event.title(), event.date());
             if (res == 1) {
-                event.pictures().forEach(pic -> {
-                    db.update("INSERT INTO pictures(id, title, path, thumb) VALUES(?,?,?,?)", pic.id(), pic.title(), pic.path(), pic.thumb());
-                    db.update("INSERT INTO event_picture(id_event, id_picture) VALUES(?,?)", event.id(), pic.id());
-                });
+                updatePictures(event.pictures().stream());
+                updateEventPictureMappings(event, event.pictures().stream());
                 return event;
             } else {
                 tx.setRollbackOnly();
@@ -75,4 +75,19 @@ public class EventRepository {
             });
         });
     }
+
+    private void updateEventPictureMappings(Event event, Stream<Picture> pictureStream) {
+        db.updateBatch("INSERT INTO event_picture(id_event, id_picture) VALUES(?,?)",
+                pictureStream
+                        .map(pic -> asList(event.id(), pic.id()))
+                        .collect(toList()));
+    }
+
+    private void updatePictures(Stream<Picture> pictureStream) {
+        db.updateBatch("INSERT INTO pictures(id, title, path, thumb) VALUES(?,?,?,?)",
+                pictureStream
+                        .map(pic -> asList(pic.id(), pic.title(), pic.path(), pic.thumb()))
+                        .collect(toList()));
+    }
+
 }
