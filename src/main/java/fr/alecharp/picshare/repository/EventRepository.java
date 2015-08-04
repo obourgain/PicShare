@@ -1,17 +1,16 @@
 package fr.alecharp.picshare.repository;
 
-import fr.alecharp.picshare.domain.Event;
-import fr.alecharp.picshare.domain.Picture;
-import org.dalesbred.Database;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
-
-import static java.util.Arrays.*;
-import static java.util.stream.Collectors.*;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import org.dalesbred.Database;
+import fr.alecharp.picshare.domain.Event;
+import fr.alecharp.picshare.domain.Picture;
 
 /**
  * @author Adrien Lecharpentier
@@ -43,15 +42,12 @@ public class EventRepository {
         return Optional.ofNullable(db.withTransaction(tx -> {
             int res = db.update("UPDATE events SET title = ?, date = ? WHERE id = ?", event.title(), event.date(), event.id());
             if (res == 1) {
-                event.pictures().stream()
-                        // TODO: filter pictures already stored in DB
-                        .filter(pic ->
-                            !db.findOptional(Picture.class, "SELECT * FROM pictures WHERE id = ?", pic.id()).isPresent()
-                        )
-                        .forEach(pic -> {
-                            db.update("INSERT INTO pictures(id, title, path, thumb) VALUES(?,?,?,?)", pic.id(), pic.title(), pic.path(), pic.thumb());
-                            db.update("INSERT INTO event_picture(id_event, id_picture) VALUES(?,?)", event.id(), pic.id());
-                        });
+                // TODO: filter pictures already stored in DB
+                Set<Picture> picturesAlreadyPresent = findPicture(event);
+                Stream<Picture> pictureToInsert = event.pictures().stream()
+                        .filter(pic -> !picturesAlreadyPresent.contains(pic));
+                updatePictures(pictureToInsert);
+                updateEventPictureMappings(event, pictureToInsert);
                 return event;
             } else {
                 tx.setRollbackOnly();
@@ -74,6 +70,12 @@ public class EventRepository {
                 return event;
             });
         });
+    }
+
+    private Set<Picture> findPicture(Event event) {
+        return event.pictures().stream()
+                .filter(pic -> !db.findOptional(Picture.class, "SELECT * FROM pictures WHERE id = ?", pic.id()).isPresent())
+                .collect(toSet());
     }
 
     private void updateEventPictureMappings(Event event, Stream<Picture> pictureStream) {
