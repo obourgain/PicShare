@@ -12,9 +12,7 @@ public class Event {
 
     private String title;
     private LocalDate date;
-    private Set<Picture> pictures = new TreeSet<>(
-            (p1, p2) -> p1.title().compareTo(p2.title())
-    );
+    private Set<Picture> pictures = new TreeSet<>(Comparator.comparing(Picture::title));
 
     private Event() {
         this(null, null);
